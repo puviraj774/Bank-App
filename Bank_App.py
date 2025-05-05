@@ -1,0 +1,211 @@
+#Function For Admin Login view 
+def Admin_Menu():
+    print("Login Successfully. WelCome Admin!")
+    print('\n---------------------------------')
+    print("======> Mini Banking Menu <======")
+    print('---------------------------------\n\n')
+    print("1.Create Account")
+    print("2.Withdraw")
+    print("3.Deposit")
+    print("4.Check Balances")
+    print("5.Transaction History")
+    print("6.Exit")
+#Function For User login view
+def User_Menu():
+    print("Login Successfully. WelCome !")
+    print('\n---------------------------------')
+    print("======> Mini Banking Menu <======")
+    print('---------------------------------\n\n')
+    print("1.Withdraw")
+    print("2.Deposit")
+    print("3.Check Balances")
+    print("4.Transaction History")
+    print("5.Exit")
+#Function For Create Account 
+Account = {}
+def Create_Account():
+    global Account
+      
+    try:
+        with open("Acc_No.txt",'r') as file: # Auto Create Account Numbers
+            Last_Acc = file.read().strip()
+            New_Acc = int(Last_Acc[1:]) + 1
+    except FileNotFoundError:
+        New_Acc = 1
+    Account_Number = "A"+str(New_Acc).zfill(3)
+    with open ("Acc_No.txt",'w') as file:
+        file.write(Account_Number)
+
+    print("\n----------------------------------")
+    print("========> Create_Account <========")
+    print("----------------------------------\n\n")
+
+    Acc_Holder_Name = input(f"{'Enter The Account Holder Name':<33} : ") # Getting Input from user
+    User_Name = input(f"{'Enter The User Name':<33} : ")
+    User_Password = input(f"{'Enter The Password':<33} : ")
+    balance = float(input(f"{'Enter The Initial Balance':<33} : $ "))
+    
+    Account[Account_Number] = {'name':Acc_Holder_Name, 'username':User_Name, 'password':User_Password, 'Balance':balance} #Adding information to Dictionary
+    
+    print("Account Created Successfully!\n\n")  
+    print(f"{'Account Number':<21} :{Account_Number}")
+    print(f"{'Account Holder Name':<21} : {Acc_Holder_Name}")
+    print(f"{'User Name':<21} : {User_Name}")
+    print(f"{'User Password':<21} : {User_Password}")
+    print(f"{'Initial Balance':<21} : {balance}")
+
+    with open ("Account_Details.txt",'a') as file:
+        file.write(f'{Account_Number},{Acc_Holder_Name},{User_Name},{User_Password},{balance}\n')
+    
+    from datetime import datetime
+    current_date_time = datetime.now()
+    with open('Transaction.txt','a') as file:
+        file.write(f'{current_date_time},{Account_Number},Deposit,{balance},{balance}\n')
+
+
+        
+def Update_Details(Account):
+    with open("Account_Details.txt",'w') as file:
+        for key , value in Account.items():
+            file.write(f"{key},{value['name']},{value['username']},{value['password']},{value['Balance']}\n")
+
+
+def Withdraw():
+    Account_Number = input("Enter The Account Number : ")
+    if Account_Number in Account:
+        Amount = float(input("Enter the Withdrawal Amount : $"))
+        if Amount > 0 and Amount <= Account[Account_Number]['Balance']:
+            New_Balance = Account[Account_Number]['Balance'] - Amount
+            Account[Account_Number]['Balance'] = New_Balance
+            Update_Details(Account)
+            from datetime import datetime
+            current_date_time = datetime.now()
+            with open ("Transaction.txt",'a') as file:
+                file.write(f"{current_date_time},{Account_Number},Withdraw,{Amount},{Account[Account_Number]['Balance']}\n")
+            print(f"Withdrawal Successful.\nWithdrawal Amount : ${Amount}\nNew Balance : {New_Balance}")
+        else:
+            print("Invalid Amount or Insufficiand Funds!")
+    else:
+        print("Inavalid Account Number!")
+
+def Deposit():
+    Account_Number = input("Enter The Account Number : ")
+    if Account_Number in Account:
+        Amount = float(input("Enter The Deposit Amount : $"))
+        if Amount > 0 :
+            New_Balance = Account[Account_Number]['Balance'] + Amount
+            Account[Account_Number]["Balance"] = New_Balance
+            Update_Details(Account)
+            from datetime import datetime
+            current_date_time = datetime.now()
+            with open ("Transaction.txt",'a') as file:
+                file.write(f"{current_date_time},{Account_Number},Deposit,{Amount},{Account[Account_Number]['Balance']}\n")
+            print(f"Deposit Successful.\nDeposit Amount : {Amount}\nNew_Balance : {New_Balance}")
+        else:
+            print("Invalid Amount , Deposit must be greater than 0 ")
+    else:
+        print("Invalid Account Number!")
+
+def Check_Balance():
+    Account_Number = input("Enter The Account Number : ")
+    if Account_Number in Account:
+        print(f"Account Balance is :{Account[Account_Number]["Balance"]}")
+    else:
+        print ("invalid Account Number !") 
+
+def Transaction():
+    global Account
+    try:
+        with open("Transaction.txt",'r') as file:
+            for Result in file:
+                date,Acc_no,Act,amount,balance = Result.strip().split(',')
+                print(f"{date :<25}  {Acc_no :<10}  {Act :<10}  {amount  :<10}  {balance :<10}\n")
+    except FileNotFoundError:
+        print("file not found")
+
+
+
+
+#===============================================================================================
+with open("Admin.txt",'w') as file:
+    file.write('Admin123,pass123')
+with open("Admin.txt",'r') as file:
+    details = file.read().strip().split(',')
+    print(f"{"User Name " :<12} : {details[0]}")
+    print(f"{"Password  " :<12} : {details[1]}")
+
+print("======Login======")
+attempt = 0
+max_attempt = 3
+
+while attempt<max_attempt:
+    username = input("Enter username : ")
+    password = input("Enter password : ")
+    if username == details[0] and password == details[1]:
+        Admin_Menu()
+        while True:
+            choice = input("enter your opinion (1 - 6) : ")
+            if choice == '1':
+                Create_Account()
+            elif choice == '2':
+                Withdraw()
+            elif choice == '3':
+                Deposit()
+            elif choice == '4':
+                Check_Balance()
+            elif choice == '5':
+                Transaction()
+            elif choice == '6':
+                print("Thank you for using ATM. Exiting program!")
+                break
+            else:
+                print("Invalid input!")
+    else:
+        for key , value in Account.items():
+            if username == value['username'] and password == value['password']:
+                User_Menu()
+                while True:
+                    choice = input("enter your opinion (1 - 6) : ")
+                    if choice == '1':
+                        Withdraw()
+                    elif choice == '2':
+                        Deposit()
+                    elif choice == '3':
+                        Check_Balance()
+                    elif choice == '4':
+                        Transaction()
+                    elif choice == '5':
+                        print("Thank you for using ATM. Exiting program!")
+                        break
+                    else:
+                        print("Invalid Input")
+                break
+            else:
+                attempt += 1
+                print(f"Login failed . you have only {max_attempt - attempt} attempts left.")
+    if max_attempt == attempt:
+        print("too many attempts failed. exiting program!")    
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
