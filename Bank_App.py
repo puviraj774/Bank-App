@@ -1,6 +1,5 @@
 #================================================================================================
 def Admin_Menu(): #Function For Admin Login view 
-    print("\nLogin Successfully. WelCome Admin!")
     print('\n---------------------------------')
     print("======> Mini Banking Menu <======")
     print('---------------------------------\n\n')
@@ -13,7 +12,6 @@ def Admin_Menu(): #Function For Admin Login view
     
 #======================================================================================================
 def User_Menu():  #Function For User login view
-    print("\nLogin Successfully. WelCome !")
     print('\n---------------------------------')
     print("======> Mini Banking Menu <======")
     print('---------------------------------\n\n')
@@ -49,8 +47,8 @@ def Create_Account():#Function For Create Account
     User_Password = input(f"{'Enter The Password':<33} : ")
     balance = float(input(f"{'Enter The Initial Balance':<33} : RS"))
     
-    Account[Account_Number] = {'name':Acc_Holder_Name, 'username':User_Name, 'password':User_Password, 'Balance':balance} #Adding information to Dictionary
     
+
     print("Account Created Successfully!\n\n")  
     print(f"{'Account Number':<21} :{Account_Number}")
     print(f"{'Account Holder Name':<21} : {Acc_Holder_Name}")
@@ -58,16 +56,21 @@ def Create_Account():#Function For Create Account
     print(f"{'User Password':<21} : {User_Password}")
     print(f"{'Initial Balance':<21} : Rs{balance}")
 
+    with open ("Users.txt",'a') as file:
+        file.write(f"{User_Name},{User_Password}\n")
+
     with open ("Account_Details.txt",'a') as file:
         file.write(f'{Account_Number},{Acc_Holder_Name},{User_Name},{User_Password},{balance}\n')
-    
+    Account[Account_Number] = {'name':Acc_Holder_Name, 'username':User_Name, 'password':User_Password, 'Balance':balance} #Adding information to Dictionary
+
     from datetime import datetime
     current_date_time = datetime.now()
     New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
 
     with open('Transaction.txt','a') as file:
         file.write(f'{New_Date_Time},{Account_Number},Deposit,{balance},{balance}\n')
-
+    
+    
 #======================================================================================================================       
 def Update_Details(Account):
 
@@ -104,6 +107,7 @@ def Withdraw():
     else:
         print("Inavalid Account Number!")
 #======================================================================================================================
+
 def Deposit():
     Account_Number = input("Enter The Account Number : ")
 
@@ -182,30 +186,30 @@ def Transaction():
     except FileNotFoundError:
 
         print("file not found")
-#===============================================================================================
-#===========================   ☠️      Program Start    ☠️     ================================
-#===============================================================================================
+# ===============================================================================================
+# ===========================   ☠️      Program Start    ☠️     ================================
+# ===============================================================================================
 
 with open("Admin.txt",'w') as file:#  Write Admin Details on Admin.txt file
     file.write('Admin123,pass123')
 
 with open("Admin.txt",'r') as file:
     details = file.read().strip().split(',')
-    print(f"\n{"User Name " :<12} : {details[0]}") # Show Admin Details For Admin login
-    print(f"{"Password  " :<12} : {details[1]}")
+#     print(f"\n{"User Name " :<12} : {details[0]}") # Show Admin Details For Admin login
+#     print(f"{"Password  " :<12} : {details[1]}")
 
 print("\n======Login======\n")
 
 attempt = 0
 max_attempt = 3
 
-while attempt<max_attempt:
+while attempt <= max_attempt:
 
     username = input("Enter username : ")
     password = input("Enter password : ")
 
     if username == details[0] and password == details[1]:
-
+        print("\nLogin Successfully. WelCome Admin!")
         while True:
             Admin_Menu()
 
@@ -228,64 +232,66 @@ while attempt<max_attempt:
 
             elif choice == '6':
                 print("Thank you for using ATM. Exiting program!")
-                break
+                exit()
             else:
                 print("Invalid input!")
 
     else:
-        for key , value in Account.items():
+        check = (f"{username},{password}")
+        
 
-            if username == value['username'] and password == value['password']:
-                
-                while True:
-                    User_Menu()
+        if username  and password in value:
+            print("\nLogin Successfully. WelCome !")
+            while True:
+                User_Menu()
 
-                    choice = input("\nenter your opinion (1 - 6) : ")
+                choice = input("\nenter your opinion (1 - 6) : ")
 
-                    if choice == '1':
-                        Withdraw()
+                if choice == '1':
+                    Withdraw()
 
-                    elif choice == '2':
-                        Deposit()
+                elif choice == '2':
+                    Deposit()
 
-                    elif choice == '3':
-                        Check_Balance()
+                elif choice == '3':
+                    Check_Balance()
 
-                    elif choice == '4':
-                        Transaction()
+                elif choice == '4':
+                    Transaction()
 
-                    elif choice == '5':
-                        print("Thank you for using ATM. Exiting program!")
-                        break
-                    else:
-                        print("Invalid Input")
-                break
+                elif choice == '5':
+                    print("Thank you for using ATM. Exiting program!")
+                    exit()
+                else:
+                    print("Invalid Input")               
 
-            else:
-                attempt += 1
-                print(f"Login failed . you have only {max_attempt - attempt} attempts left.")
-
-    if max_attempt == attempt:
-        print("too many attempts failed. exiting program!")    
-                    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        else:
+            attempt += 1
+            print(f"Login failed . you have only {max_attempt - attempt} attempts left.")
     
+        if max_attempt == attempt:
+            print("too many attempts failed. exiting program!")
+            exit()               
+
+
+
+
+
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
