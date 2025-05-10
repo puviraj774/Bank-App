@@ -5,7 +5,11 @@ init(autoreset=True)
 # "pip install colorama" run in command prompt
 
 
-def Admin_Menu(): #Function For Admin Login view 
+#======================================================================================================
+#============================== FUNCTION FOR ADMIN LOGIN VIEW ========================================
+#======================================================================================================
+
+def Admin_Menu(): 
     print('\n---------------------------------')
     print(Fore.GREEN+"======> Mini Banking Menu <======")
     print('---------------------------------\n\n')
@@ -17,9 +21,12 @@ def Admin_Menu(): #Function For Admin Login view
     print("6.Transaction History")
     print("7.Search Account Details")
     print("8.Exit")
-    
+
 #======================================================================================================
-def User_Menu():  #Function For User login view
+#============================= FUNCTION FOR USER LOGIN VIEW ===========================================
+#======================================================================================================
+
+def User_Menu():  
     print('\n---------------------------------')
     print(Fore.GREEN+"======> Mini Banking Menu <======")
     print('---------------------------------\n\n')
@@ -30,9 +37,12 @@ def User_Menu():  #Function For User login view
     print("5.Transaction History")
     print("6.Exit")
 
-#======================================================================================================
+#==========================================================================================================
+#============================ FUNCTION FOR CREATE ACCOUNT AND GET USER DETAILS ============================
+#========================= AUTO ACCOUNT NUMBER CREATION AND AUTO USER NAME CREATION =======================
+#==========================================================================================================
 
-def Create_Account():#Function For Create Account 
+def Create_Account():
       
     try:
         with open("Acc_No.txt",'r') as file: # Auto Create Account Numbers
@@ -46,7 +56,7 @@ def Create_Account():#Function For Create Account
         file.write(Account_Number)
 
     try:
-        with open("User_ID.txt",'r') as file: # Auto Create Account Numbers
+        with open("User_ID.txt",'r') as file: 
             Last_Acc = file.read().strip()
             New_Acc = int(Last_Acc[1:]) + 1
     except FileNotFoundError:       
@@ -59,7 +69,7 @@ def Create_Account():#Function For Create Account
     print(Fore.BLUE+"\n========> Create_Account <========\n")
 
 
-    Acc_Holder_Name = input(f"{'Enter The Account Holder Name':<33} : ") # Getting Input from user
+    Acc_Holder_Name = input(f"{'Enter The Account Holder Name':<33} : ") 
     User_Address = input(f"{'Enter The Address':<33} : ")
     print(f"{'User Name':<33} : {User_Id}")
     User_Password = input(f"{'Enter The Password':<33} : ")
@@ -72,13 +82,13 @@ def Create_Account():#Function For Create Account
     print(f"{'User Password':<21} : {User_Password}")
     print(f"{'Initial Balance':<21} : Rs {balance}")
 
-    with open ("Users_Details.txt",'a') as file: # file writing
+    with open ("Users_Details.txt",'a') as file: 
         file.write(f"{User_Id},{User_Password}\n")
     
-    with open ("Customer_Details.txt",'a') as file: # file writing
+    with open ("Customer_Details.txt",'a') as file: 
         file.write(f"{User_Id},{Acc_Holder_Name},{User_Address}\n")
 
-    with open ("Account_Details.txt",'a') as file: # file writing
+    with open ("Account_Details.txt",'a') as file: 
         file.write(f'{Account_Number},{Acc_Holder_Name},{balance}\n')
 
     from datetime import datetime
@@ -87,6 +97,8 @@ def Create_Account():#Function For Create Account
 
     with open('Transaction.txt','a') as file:
         file.write(f'{New_Date_Time},{Account_Number},Deposit,{balance},{balance}\n')
+#=======================================================================================================================
+#=============================================== FUNCTION FOR WITHDRAW =================================================
 #=======================================================================================================================
 def Withdraw():
     global Account_Number
@@ -138,7 +150,10 @@ def Withdraw():
             if not found:
                 print(Fore.RED+"\nAccount Number Not Found!")
     except FileNotFoundError:
-        print(Fore.RED+"\nCreate customer first!")          
+        print(Fore.RED+"\nCreate customer first!")  
+
+#======================================================================================================================
+#===================================== FUNCTION FOR DEPOSIT ===========================================================
 #======================================================================================================================
 
 def Deposit(): #function for Deposit
@@ -189,6 +204,9 @@ def Deposit(): #function for Deposit
         print(Fore.RED+"\nCreate Account First")
                 
 #========================================================================================================================
+#===================================== FUNCTION FOR CHECK BALANCE =======================================================
+#========================================================================================================================
+
 def Check_Balance(): # function for check balance
     global Account_Number
     found_Account = False
@@ -206,7 +224,11 @@ def Check_Balance(): # function for check balance
                 print(Fore.RED+"Invalid Account Number !")
     except FileNotFoundError:
         print(Fore.RED+"file not found!")
+
 #========================================================================================================================
+#=================================== FUNCTION FOR TRANSACTION MONEY =====================================================
+#========================================================================================================================
+
 def Transaction(): #function for Transaction Money
     from datetime import datetime
     current_date_time = datetime.now()
@@ -268,6 +290,9 @@ def Transaction(): #function for Transaction Money
         print(Fore.RED+"\nfile not found!")
 
 #=========================================================================================================================
+#=================================== FUNCTION FOR VIEW TRANSACTION HISTORY ===============================================
+#=========================================================================================================================
+
 def Transaction_History():  # function for transaction history
     global Account_Number
 
@@ -287,7 +312,9 @@ def Transaction_History():  # function for transaction history
     except FileNotFoundError:
         print(Fore.RED + "Transaction file not found.")
 
-#=======================================================================================================
+#=======================================================================================================================
+#================================== FUNCTION FOR SEARCH ACCOUNT DETAILS ================================================
+#=======================================================================================================================
 
 def Search_Account_Details():
     global Account_Number
@@ -325,6 +352,7 @@ def Search_Account_Details():
 # ===============================================================================================
 # ===========================         Program Start         ===================================== 
 # ===============================================================================================
+
 attempt =0
 max_attempt = 3
 
