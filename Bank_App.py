@@ -65,19 +65,17 @@ def Create_Account():#Function For Create Account
 
     print("\nAccount Created Successfully!\n\n")  
     print(f"{'Account Number':<21} : {Account_Number}")
-    # print(f"{'Account Holder Name':<21} : {Acc_Holder_Name}")
-    # print(f"{'User Address' :<21} : {User_Address}")
     print(f"{'User Name':<21} : {User_Id}")
     print(f"{'User Password':<21} : {User_Password}")
     print(f"{'Initial Balance':<21} : Rs {balance}")
 
-    with open ("Users_Details.txt",'a') as file:
+    with open ("Users_Details.txt",'a') as file: # file writing
         file.write(f"{User_Id},{User_Password}\n")
     
-    with open ("Customer_Details.txt",'a') as file:
+    with open ("Customer_Details.txt",'a') as file: # file writing
         file.write(f"{User_Id},{Acc_Holder_Name},{User_Address}\n")
 
-    with open ("Account_Details.txt",'a') as file:
+    with open ("Account_Details.txt",'a') as file: # file writing
         file.write(f'{Account_Number},{Acc_Holder_Name},{balance}\n')
 
     from datetime import datetime
@@ -88,7 +86,7 @@ def Create_Account():#Function For Create Account
         file.write(f'{New_Date_Time},{Account_Number},Deposit,{balance},{balance}\n')
 #=======================================================================================================================
 
-def Withdraw():
+def Withdraw(): # function for withdraw
     global Account_Number
     found = False
     try:
@@ -133,7 +131,7 @@ def Withdraw():
             
 #======================================================================================================================
 
-def Deposit():
+def Deposit(): #function for Deposit
     global Account_Number
     found = False
     try:
@@ -171,7 +169,7 @@ def Deposit():
         print("Create Account First")
                 
 #========================================================================================================================
-def Check_Balance():
+def Check_Balance(): # function for check balance
     global Account_Number
     found_Account = False
     try:
@@ -189,7 +187,7 @@ def Check_Balance():
     except FileNotFoundError:
         print("file not found!")
 #========================================================================================================================
-def Transaction():
+def Transaction(): #function for Transaction
     from datetime import datetime
     current_date_time = datetime.now()
     New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
@@ -245,7 +243,7 @@ def Transaction():
         print("file not found!")
 
 #=========================================================================================================================
-def Transaction_History():
+def Transaction_History(): #function for transaction history
     global Account_Number
 
     try:
