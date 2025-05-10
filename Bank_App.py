@@ -91,39 +91,41 @@ def Create_Account():#Function For Create Account
 def Withdraw():
     global Account_Number
     found = False
+    try:
+        with open("Account_Details.txt",'r') as file:
+            for lines in file:
+                line = lines.strip().split(',')
+                
+                if Account_Number == line[0]:
+                    Amount = float(input("Enter the Withdrawal Amount : Rs "))
+                    if Amount > 0 and Amount <= float(line[2]):
+                        New_Balance = float(line[2]) - Amount
 
-    with open("Account_Details.txt",'r') as file:
-        for lines in file:
-            line = lines.strip().split(',')
-            
-            if Account_Number == line[0]:
-                Amount = float(input("Enter the Withdrawal Amount : Rs "))
-                if Amount > 0 and Amount <= float(line[2]):
-                    New_Balance = float(line[2]) - Amount
+                    with open("Account_Details.txt",'r') as file:
+                        lines = file.readlines()
 
-                with open("Account_Details.txt",'r') as file:
-                    lines = file.readlines()
+                    with open("Account_Details.txt",'w') as file:
+                        for line in lines:
+                            details = line.strip().split(',')
+                            if details[0] == Account_Number:
+                                details[2] = New_Balance
+                            file.write(f"{details[0]},{details[1]},{details[2]}\n")
 
-                with open("Account_Details.txt",'w') as file:
-                    for line in lines:
-                        details = line.strip().split(',')
-                        if details[0] == Account_Number:
-                            details[2] = New_Balance
-                        file.write(f"{details[0]},{details[1]},{details[2]}\n")
+                    from datetime import datetime
+                    current_date_time = datetime.now()
+                    New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
 
-                from datetime import datetime
-                current_date_time = datetime.now()
-                New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
-
-                with open ("Transaction.txt",'a') as file:
-                    file.write(f"{New_Date_Time},{Account_Number},Withdraw,{Amount},{New_Balance}\n")
-                    print(f"\nWithdrawal Successful.\n\nWithdrawal Amount : Rs {Amount}\nNew Balance : Rs {New_Balance}")
-                    found =True
-                                   
-                if Amount <= 0 and Amount >= float(line[2]):
-                    print("Insufficient Funds!")
-        if not found:
-            print("Account Number Not Found!")   
+                    with open ("Transaction.txt",'a') as file:
+                        file.write(f"{New_Date_Time},{Account_Number},Withdraw,{Amount},{New_Balance}\n")
+                        print(f"\nWithdrawal Successful.\n\nWithdrawal Amount : Rs {Amount}\nNew Balance : Rs {New_Balance}")
+                        found =True
+                                    
+                    if Amount <= 0 and Amount >= float(line[2]):
+                        print("Insufficient Funds!")
+            if not found:
+                print("Account Number Not Found!")   
+    except FileNotFoundError:
+        print("create customer first!")
                 
             
                 
@@ -134,54 +136,58 @@ def Withdraw():
 def Deposit():
     global Account_Number
     found = False
-    
-    with open("Account_Details.txt",'r') as file:
-        for line in file:
-            lines = line.strip().split(',')
-            
-            if Account_Number == lines[0]:
-                Amount = float(input("Enter The Deposit Amount : Rs "))
-                if Amount > 0 :
-                    New_Balance = float(lines[2]) + Amount
-                    
-                with open("Account_Details.txt",'r') as file:
-                    lines = file.readlines()
-
-                with open("Account_Details.txt",'w') as file:
-                    for line in lines:
-                        details = line.strip().split(',')
-                        if details[0] == Account_Number:
-                            details[2] = New_Balance
-                        file.write(f"{details[0]},{details[1]},{details[2]}\n")
-
-                from datetime import datetime
-                current_date_time = datetime.now()
-                New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
-
-                with open ("Transaction.txt",'a') as file:
-                    file.write(f"{New_Date_Time},{Account_Number},Deposit,{Amount},{New_Balance}\n")
-                    print(f"\nDeposit Successful.\n\nDeposit Amount : Rs {Amount}\nNew_Balance : Rs {New_Balance}")
-                    found =  True
+    try:
+        with open("Account_Details.txt",'r') as file:
+            for line in file:
+                lines = line.strip().split(',')
                 
-        if not found:
-            print("Account Number Not Found!")
+                if Account_Number == lines[0]:
+                    Amount = float(input("Enter The Deposit Amount : Rs "))
+                    if Amount > 0 :
+                        New_Balance = float(lines[2]) + Amount
+                        
+                    with open("Account_Details.txt",'r') as file:
+                        lines = file.readlines()
+
+                    with open("Account_Details.txt",'w') as file:
+                        for line in lines:
+                            details = line.strip().split(',')
+                            if details[0] == Account_Number:
+                                details[2] = New_Balance
+                            file.write(f"{details[0]},{details[1]},{details[2]}\n")
+
+                    from datetime import datetime
+                    current_date_time = datetime.now()
+                    New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
+
+                    with open ("Transaction.txt",'a') as file:
+                        file.write(f"{New_Date_Time},{Account_Number},Deposit,{Amount},{New_Balance}\n")
+                        print(f"\nDeposit Successful.\n\nDeposit Amount : Rs {Amount}\nNew_Balance : Rs {New_Balance}")
+                        found =  True
+                    
+            if not found:
+                print("Account Number Not Found!")
+    except FileNotFoundError:
+        print("Create Account First")
                 
 #========================================================================================================================
 def Check_Balance():
     global Account_Number
     found_Account = False
+    try:
+        with open("Account_Details.txt",'r') as file:
+            for line in file:
+                datas = line.strip().split(',')
 
-    with open("Account_Details.txt",'r') as file:
-        for line in file:
-            datas = line.strip().split(',')
-
-            if Account_Number == datas[0]:
-                print(f"\nAccount Balance is : Rs {float(datas[2])}\n")
-                found_Account = True
-                break
-                
-        if not found_Account:
-            print("Invalid Account Number !")
+                if Account_Number == datas[0]:
+                    print(f"\nAccount Balance is : Rs {float(datas[2])}\n")
+                    found_Account = True
+                    break
+                    
+            if not found_Account:
+                print("Invalid Account Number !")
+    except FileNotFoundError:
+        print("file not found!")
 #========================================================================================================================
 def Transaction():
     from datetime import datetime
@@ -191,50 +197,52 @@ def Transaction():
     global Account_Number
     Account_Number2 = input(f"{'Transfer To':<15} :  ")
 
-
-    with open("Account_Details.txt",'r') as file:
-        Acc01 = file.readlines()
-    
-    find_Account_Number =False
-    find_Account_Number2 =False
-
-    for line in Acc01:
-        Details = line.strip().split(',')
-        if Details[0] == Account_Number:
-            find_Account_Number = True
-            Balance01 = float(Details[2])
-        if Details[0] == Account_Number2:
-            find_Account_Number2 = True
-            Balance02 = float(Details[2])
+    try:
+        with open("Account_Details.txt",'r') as file:
+            Acc01 = file.readlines()
         
+        find_Account_Number =False
+        find_Account_Number2 =False
 
-    if find_Account_Number and find_Account_Number2:
-        Amount = float(input("\nEnter The Amount :"))
-        if Amount <= Balance01:                
-
-            New_Balance01 = Balance01 - Amount
-            New_Balance02 = Balance02 + Amount
-           
-            with open("Account_Details.txt",'w') as file:
-                for up in Acc01:
-                    update02 = up.strip().split(',')
-                    if update02[0] == Account_Number:
-                        update02[2] = float(New_Balance01)
-                    elif update02[0] == Account_Number2:
-                        update02[2] = float(New_Balance02)
-                    file.write(f"{update02[0]},{update02[1]},{update02[2]}\n")
-                
-            with open("Transaction.txt",'a') as file:
-                        
-                file.write(f"{New_Date_Time},{Account_Number},Transfer out,{Amount},{New_Balance01}\n")
-                file.write(f"{New_Date_Time},{Account_Number2},Transfer In,{Amount},{New_Balance02}\n")
-                print("\nTransaction Successful ! ")
-                
-        else :
-            print ("Insufficient Funds!")
+        for line in Acc01:
+            Details = line.strip().split(',')
+            if Details[0] == Account_Number:
+                find_Account_Number = True
+                Balance01 = float(Details[2])
+            if Details[0] == Account_Number2:
+                find_Account_Number2 = True
+                Balance02 = float(Details[2])
             
-    else:
-        print("Invalid Account Number!")
+
+        if find_Account_Number and find_Account_Number2:
+            Amount = float(input("\nEnter The Amount :"))
+            if Amount <= Balance01:                
+
+                New_Balance01 = Balance01 - Amount
+                New_Balance02 = Balance02 + Amount
+            
+                with open("Account_Details.txt",'w') as file:
+                    for up in Acc01:
+                        update02 = up.strip().split(',')
+                        if update02[0] == Account_Number:
+                            update02[2] = float(New_Balance01)
+                        elif update02[0] == Account_Number2:
+                            update02[2] = float(New_Balance02)
+                        file.write(f"{update02[0]},{update02[1]},{update02[2]}\n")
+                    
+                with open("Transaction.txt",'a') as file:
+                            
+                    file.write(f"{New_Date_Time},{Account_Number},Transfer out,{Amount},{New_Balance01}\n")
+                    file.write(f"{New_Date_Time},{Account_Number2},Transfer In,{Amount},{New_Balance02}\n")
+                    print("\nTransaction Successful ! ")
+                    
+            else :
+                print ("Insufficient Funds!")
+                
+        else:
+            print("Invalid Account Number!")
+    except FileNotFoundError:
+        print("file not found!")
 
 #=========================================================================================================================
 def Transaction_History():
