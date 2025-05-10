@@ -65,8 +65,8 @@ def Create_Account():#Function For Create Account
 
     print("\nAccount Created Successfully!\n\n")  
     print(f"{'Account Number':<21} : {Account_Number}")
-    print(f"{'Account Holder Name':<21} : {Acc_Holder_Name}")
-    print(f"{'User Address' :<21} : {User_Address}")
+    # print(f"{'Account Holder Name':<21} : {Acc_Holder_Name}")
+    # print(f"{'User Address' :<21} : {User_Address}")
     print(f"{'User Name':<21} : {User_Id}")
     print(f"{'User Password':<21} : {User_Password}")
     print(f"{'Initial Balance':<21} : Rs {balance}")
@@ -90,98 +90,98 @@ def Create_Account():#Function For Create Account
 
 def Withdraw():
     global Account_Number
+    found = False
 
     with open("Account_Details.txt",'r') as file:
-        line = file.readlines()
-        for Acc_no in line:
-            Acc_no02 = Acc_no.strip().split(',')
-            if Account_Number == Acc_no02[0]:
+        for lines in file:
+            line = lines.strip().split(',')
+            
+            if Account_Number == line[0]:
+                Amount = float(input("Enter the Withdrawal Amount : Rs "))
+                if Amount > 0 and Amount <= float(line[2]):
+                    New_Balance = float(line[2]) - Amount
 
-                Amount = float(input("\nEnter the Withdrawal Amount : Rs "))
+                with open("Account_Details.txt",'r') as file:
+                    lines = file.readlines()
 
-                if Amount > 0 and Amount <= float(Acc_no02[2]):
+                with open("Account_Details.txt",'w') as file:
+                    for line in lines:
+                        details = line.strip().split(',')
+                        if details[0] == Account_Number:
+                            details[2] = New_Balance
+                        file.write(f"{details[0]},{details[1]},{details[2]}\n")
 
-                    New_Balance = float(Acc_no02[2]) - Amount
+                from datetime import datetime
+                current_date_time = datetime.now()
+                New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
 
-                    with open("Account_Details.txt",'r') as file:
-                        lines = file.readlines()
-
-                    with open("Account_Details.txt",'w') as file:
-                        for line in lines:
-                            details = line.strip().split(',')
-                            if details[0] == Account_Number:
-                                details[2] = New_Balance
-                            file.write(f"{details[0]},{details[1]},{details[2]}\n")
-
-                    from datetime import datetime
-                    current_date_time = datetime.now()
-                    New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
-
-                    with open ("Transaction.txt",'a') as file:
-                        file.write(f"{New_Date_Time},{Account_Number},Withdraw,{Amount},{New_Balance}\n")
-
+                with open ("Transaction.txt",'a') as file:
+                    file.write(f"{New_Date_Time},{Account_Number},Withdraw,{Amount},{New_Balance}\n")
                     print(f"\nWithdrawal Successful.\n\nWithdrawal Amount : Rs {Amount}\nNew Balance : Rs {New_Balance}")
-                    break
-                else:
-                    print("Invalid Amount or Insufficiand Funds!")
-            else:
-                print("Inavalid Account Number!")
+                    found =True
+                                   
+                if Amount <= 0 and Amount >= float(line[2]):
+                    print("Insufficient Funds!")
+        if not found:
+            print("Account Number Not Found!")   
+                
+            
+                
+       
+            
 #======================================================================================================================
 
 def Deposit():
     global Account_Number
+    found = False
     
     with open("Account_Details.txt",'r') as file:
-        line = file.readlines()
-        for Acc_no in line:
-            Acc_no2 = Acc_no.strip().split(',')
-            if Account_Number == Acc_no2[0]:
-
+        for line in file:
+            lines = line.strip().split(',')
+            
+            if Account_Number == lines[0]:
                 Amount = float(input("Enter The Deposit Amount : Rs "))
-
                 if Amount > 0 :
-                    New_Balance = float(Acc_no2[2]) + Amount
+                    New_Balance = float(lines[2]) + Amount
                     
-                    with open("Account_Details.txt",'r') as file:
-                        lines = file.readlines()
+                with open("Account_Details.txt",'r') as file:
+                    lines = file.readlines()
 
-                    with open("Account_Details.txt",'w') as file:
-                        for line in lines:
-                            details = line.strip().split(',')
-                            if details[0] == Account_Number:
-                                details[2] = New_Balance
-                            file.write(f"{details[0]},{details[1]},{details[2]}\n")
+                with open("Account_Details.txt",'w') as file:
+                    for line in lines:
+                        details = line.strip().split(',')
+                        if details[0] == Account_Number:
+                            details[2] = New_Balance
+                        file.write(f"{details[0]},{details[1]},{details[2]}\n")
 
-                    from datetime import datetime
-                    current_date_time = datetime.now()
-                    New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
+                from datetime import datetime
+                current_date_time = datetime.now()
+                New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
 
-                    with open ("Transaction.txt",'a') as file:
-                        file.write(f"{New_Date_Time},{Account_Number},Deposit,{Amount},{New_Balance}\n")
-
-                    print(f"Deposit Successful.\nDeposit Amount : Rs {Amount}\nNew_Balance : Rs {New_Balance}")
-                    break
-                else:
-                    print("Invalid Amount , Deposit must be greater than 0 ")
-            else:
-                print("Invalid Account Number!")
+                with open ("Transaction.txt",'a') as file:
+                    file.write(f"{New_Date_Time},{Account_Number},Deposit,{Amount},{New_Balance}\n")
+                    print(f"\nDeposit Successful.\n\nDeposit Amount : Rs {Amount}\nNew_Balance : Rs {New_Balance}")
+                    found =  True
+                
+        if not found:
+            print("Account Number Not Found!")
+                
 #========================================================================================================================
 def Check_Balance():
     global Account_Number
+    found_Account = False
 
     with open("Account_Details.txt",'r') as file:
-        line = file.readlines()
-       
-        for Acc_no in line:
-            Acc_no2 = Acc_no.strip().split(',')
+        for line in file:
+            datas = line.strip().split(',')
 
-    
-            if Account_Number == Acc_no2[0]:
-                print(f"\nAccount Balance is : Rs {float(Acc_no2[2])}\n")
+            if Account_Number == datas[0]:
+                print(f"\nAccount Balance is : Rs {float(datas[2])}\n")
+                found_Account = True
                 break
-            
-            else:
-                print ("invalid Account Number❌ !") 
+                
+        if not found_Account:
+            print("Invalid Account Number !")
 #========================================================================================================================
 def Transaction():
     from datetime import datetime
@@ -189,7 +189,7 @@ def Transaction():
     New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
 
     global Account_Number
-    Account_Number2 = input("\nEnter The Another Account Number To Transfer Amount : Rs ")
+    Account_Number2 = input(f"{'Transfer To':<15} :  ")
 
 
     with open("Account_Details.txt",'r') as file:
@@ -203,52 +203,39 @@ def Transaction():
         if Details[0] == Account_Number:
             find_Account_Number = True
             Balance01 = float(Details[2])
-        elif Details[0] == Account_Number2:
+        if Details[0] == Account_Number2:
             find_Account_Number2 = True
             Balance02 = float(Details[2])
-            break
+        
 
     if find_Account_Number and find_Account_Number2:
-        Amount = float(input("Enter The Amount :"))
+        Amount = float(input("\nEnter The Amount :"))
         if Amount <= Balance01:                
 
             New_Balance01 = Balance01 - Amount
             New_Balance02 = Balance02 + Amount
-
-            with open("Account_Details.txt",'r') as file:
-                update01 = file.readlines()
-            
+           
             with open("Account_Details.txt",'w') as file:
-                for up in update01:
+                for up in Acc01:
                     update02 = up.strip().split(',')
                     if update02[0] == Account_Number:
                         update02[2] = float(New_Balance01)
-                    if update02[0] == Account_Number2:
+                    elif update02[0] == Account_Number2:
                         update02[2] = float(New_Balance02)
                     file.write(f"{update02[0]},{update02[1]},{update02[2]}\n")
-
-            with open ("Transaction.txt",'r') as file:
-                Tran01 = file.readlines()
-            
+                
             with open("Transaction.txt",'a') as file:
-                for Trans in Tran01:
-                    Tran02 = Trans.strip().split(',')
-                    if Tran02[1] == Account_Number:
-                        Tran02[2] = "Transfer out"
-                        Tran02[4] = float(New_Balance01)
-                        Tran02[3] = Amount
-                    if Tran02[1] == Account_Number2:
-                        Tran02[2] = "Transfer In"
-                        Tran02[4] = float(New_Balance02)
-                        Tran02[3] = Amount
                         
-                    file.write(f"{New_Date_Time},{Tran02[1]},{Tran02[2]},{Tran02[3]},{Tran02[4]}\n")
-                    print("\nTransaction Successful ! ")
-
+                file.write(f"{New_Date_Time},{Account_Number},Transfer out,{Amount},{New_Balance01}\n")
+                file.write(f"{New_Date_Time},{Account_Number2},Transfer In,{Amount},{New_Balance02}\n")
+                print("\nTransaction Successful ! ")
+                
         else :
             print ("Insufficient Funds!")
+            
     else:
         print("Invalid Account Number!")
+
 #=========================================================================================================================
 def Transaction_History():
     global Account_Number
@@ -268,132 +255,138 @@ def Transaction_History():
 
         print("file not found")
 # ===============================================================================================
-# ===========================   ☠️      Program Start    ☠️     ================================
+# ===========================         Program Start         ===================================== 
 # ===============================================================================================
-Admin_Details = 'Admin123,pass123\n'
+def program():  
+    Admin_Details = 'Admin123,pass123\n'
 
-with open ("Admin_Details.txt",'w') as file:
-    file.write(Admin_Details)
+    with open ("Admin_Details.txt",'w') as file:
+        file.write(Admin_Details)
 
+    print("\n======Login======\n")
 
+    with open ("Admin_Details.txt",'r') as file:
+        Admin = file.readline().strip()
 
-print("\n======Login======\n")
+    uname_for_admin , password_for_admin = Admin.split(',') 
 
+    username = input("Enter UserName : ")
+    password = input("Enter Password : ")
 
-with open ("Admin_Details.txt",'r') as file:
-    Admin = file.readline().strip()
+    if username == uname_for_admin and password == password_for_admin:
+        print("\nLogin Successfully. WelCome Admin!")
+        while True:
+            Admin_Menu()
 
-uname_for_admin , password_for_admin = Admin.split(',') 
+            choice = input("\nenter your opinion (1 - 7) : ")
 
-username = input("Enter UserName : ")
-password = input("Enter Password : ")
+            if choice == '1':
+                Create_Account()
 
+            elif choice == '2':               
+                print("\n==========> Withdraw  <==========\n")
+                Account_Number = input("Enter The Account Number : ")              
+                Withdraw()
 
-if username == uname_for_admin and password == password_for_admin:
-    print("\nLogin Successfully. WelCome Admin!")
-    while True:
-        Admin_Menu()
+            elif choice == '3':
+                print("\n==========> Deposit  <==========\n")
+                Account_Number = input("Enter The Account Number : ")
+                Deposit()
 
-        choice = input("\nenter your opinion (1 - 7) : ")
+            elif choice == '4':                
+                print("\n==========> Check Balance  <==========\n")
+                Account_Number = input("Enter The Account Number : ")               
+                Check_Balance()
 
-        if choice == '1':
-            Create_Account()
+            elif choice == '5':
+                print("\n==========> Money Transfer  <==========\n")
+                Account_Number = input(f"{'Transfer From':<15} : ")
+                Transaction()
 
-        elif choice == '2':               
-            print("\n==========> Withdraw  <==========\n\n")
-            Account_Number = input("Enter The Account Number : ")              
-            Withdraw()
+            elif choice == '6':
+                print("\n==========>  View Transaction_History  <==========\n")
+                Account_Number = input("Enter The Account Number : ")
+                Transaction_History()
 
-        elif choice == '3':
-            print("\n==========> Deposit  <==========\n\n")
-            Account_Number = input("Enter The Account Number : ")
-            Deposit()
+            elif choice == '7':
+                print("Thank you for using ATM. Exiting program!")
+                exit()
+            else:
+                print("\nInvalid input!")
 
-        elif choice == '4':                
-            print("\n==========> Check Balance  <==========\n\n")
-            Account_Number = input("Enter The Account Number : ")               
-            Check_Balance()
+    else:
+        try:
+            with open ("Users_Details.txt",'r') as file:
+                lines = file.readlines()
 
-        elif choice == '5':
-            print("\n==========> Money Transfer  <==========\n\n")
-            Account_Number = input("Enter The Account Number : ")
-            Transaction()
+                for line in lines:
+                    line2 = line.strip().split(',')
 
-        elif choice == '6':
-            print("\n==========>  View Transaction_History  <==========\n\n")
-            Account_Number = input("\nEnter The Account Number : ")
-            Transaction_History()
+                    if username  == line2[0] and  password == line2[1]:
 
-        elif choice == '7':
-            print("Thank you for using ATM. Exiting program!")
-            exit()
-        else:
-            print("\nInvalid input!")
+                        with open("Customer_Details.txt",'r') as file:
+                            CUS = file.readlines()
+                            for CUS2 in CUS:
+                                CUS3 = CUS2.strip().split(',')
+                                if CUS3[0] == line2[0]:
+                                    AHN = CUS3[1]
+                                    with open ("Account_Details.txt",'r') as file:
+                                        SAC = file.readlines()
 
-else:
-    try:
-        with open ("Users_Details.txt",'r') as file:
-            lines = file.readlines()
+                                    for SAC2 in SAC:
+                                        SAC3 = SAC2.strip().split(',')
+                                        if AHN == SAC3[1]:
+                                            Account_Number = SAC3[0]
 
-            for line in lines:
-                line2 = line.strip().split(',')
+                                            print("\nLogin Successfully. WelCome !")
+                                            while True:
+                                                User_Menu()
 
-                if username  == line2[0] and  password == line2[1]:
+                                                choice = input("\nenter your opinion (1 - 6) : ")
 
-                    with open("Customer_Details.txt",'r') as file:
-                        CUS = file.readlines()
-                        for CUS2 in CUS:
-                            CUS3 = CUS2.strip().split(',')
-                            if CUS3[0] == line2[0]:
-                                AHN = CUS3[1]
-                                with open ("Account_Details.txt",'r') as file:
-                                    SAC = file.readlines()
+                                                if choice == '1':
+                                                    print("\n==========> Withdraw  <==========\n")
+                                                    Withdraw()
 
-                                for SAC2 in SAC:
-                                    SAC3 = SAC2.strip().split(',')
-                                    if AHN == SAC3[1]:
-                                        Account_Number = SAC3[0]
+                                                elif choice == '2':
+                                                    print("\n==========> Deposit  <==========\n")
+                                                    Deposit()
 
-                                        print("\nLogin Successfully. WelCome !")
-                                        while True:
-                                            User_Menu()
+                                                elif choice == '3':
+                                                    print("\n==========> Check Balance  <==========\n")
+                                                    Check_Balance()
 
-                                            choice = input("\nenter your opinion (1 - 6) : ")
+                                                elif choice == '4':
+                                                    print("\n==========> Money Transfer  <==========\n")
+                                                    Transaction()
 
-                                            if choice == '1':
-                                                print("\n==========> Withdraw  <==========\n\n")
-                                                Withdraw()
+                                                elif choice == '5':
+                                                    print("\n==========>  View Transaction_History  <==========\n")
+                                                    Transaction_History()
 
-                                            elif choice == '2':
-                                                print("\n==========> Deposit  <==========\n\n")
-                                                Deposit()
-
-                                            elif choice == '3':
-                                                print("\n==========> Check Balance  <==========\n\n")
-                                                Check_Balance()
-
-                                            elif choice == '4':
-                                                print("\n==========> Money Transfer  <==========\n\n")
-                                                Transaction()
-
-                                            elif choice == '5':
-                                                print("\n==========>  View Transaction_History  <==========\n\n")
-                                                Transaction_History()
-
-                                            elif choice == '6':
-                                                print("Thank you for using ATM. Exiting program!")
-                                                exit()
-                                            else:
-                                                print("Invalid Input") 
-       
-    except FileNotFoundError:
-        print("Login Failed! Try Again.")
-        pass
+                                                elif choice == '6':
+                                                    print("Thank you for using ATM. Exiting program!")
+                                                    exit()
+                                                else:
+                                                    print("Invalid Input") 
+        
+        except FileNotFoundError:
+            pass
 
            
-            
-               
-                            
+attempt = 0
+max_attempt = 3
+
+while attempt < max_attempt:
+    program()
+    attempt += 1
+    
+    if attempt == max_attempt:
+        print("Too mant Attempts Failed . Exiting Program!")
+        break
+    else:
+        print(f"Login Failed You Have Only {max_attempt - attempt} Attempt(s)")
+                             
 
                          
 
