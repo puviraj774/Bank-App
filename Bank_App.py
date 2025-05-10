@@ -257,7 +257,7 @@ def Transaction_History():
 # ===============================================================================================
 # ===========================         Program Start         ===================================== 
 # ===============================================================================================
-def program():  
+while True:  
     Admin_Details = 'Admin123,pass123\n'
 
     with open ("Admin_Details.txt",'w') as file:
@@ -374,18 +374,7 @@ def program():
             pass
 
            
-attempt = 0
-max_attempt = 3
 
-while attempt < max_attempt:
-    program()
-    attempt += 1
-    
-    if attempt == max_attempt:
-        print("Too mant Attempts Failed . Exiting Program!")
-        break
-    else:
-        print(f"Login Failed You Have Only {max_attempt - attempt} Attempt(s)")
                              
 
                          
