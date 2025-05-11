@@ -73,7 +73,12 @@ def Create_Account():
     User_Address = input(f"{'Enter The Address':<33} : ")
     print(f"{'User Name':<33} : {User_Id}")
     User_Password = input(f"{'Enter The Password':<33} : ")
-    balance = float(input(f"{'Enter The Initial Balance':<33} : RS "))
+    while True:
+        try:
+            balance = float(input(f"{'Enter The Initial Balance':<33} : RS "))
+            break
+        except ValueError:
+            print(Fore.RED+"invalid input . Enter numbers Only!")
     
 
     print(Fore.YELLOW+"\nAccount Created Successfully!\n\n")  
