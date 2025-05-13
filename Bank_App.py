@@ -1,5 +1,4 @@
 #================================================================================================
-from ntpath import join
 from colorama import Fore, Back, Style, init
 init(autoreset=True) 
 # "pip install colorama" run in command prompt
@@ -19,7 +18,7 @@ def Admin_Menu():
     print("5.Transfer Money")
     print("6.Transaction History")
     print("7.Search Account Details")
-    print("8.Exit")
+    print(Fore.RED+"8.Exit")
 
 #======================================================================================================
 #============================= FUNCTION FOR USER LOGIN VIEW ===========================================
@@ -34,7 +33,7 @@ def User_Menu():
     print("3.Check Balances")
     print("4.Transfer Money")
     print("5.Transaction History")
-    print("6.Exit")
+    print(Fore.RED+"6.Exit")
 
 #==========================================================================================================
 #============================ FUNCTION FOR CREATE ACCOUNT AND GET USER DETAILS ============================
@@ -100,7 +99,7 @@ def Create_Account():
     New_Date_Time = current_date_time.strftime("%d/%m/%y %H:%M")
 
     with open('Transaction.txt','a') as file:
-        file.write(f'{New_Date_Time},{Account_Number},Deposit,{balance},{balance}\n')
+        file.write(f'{New_Date_Time},{Account_Number},Initial,{balance},{balance}\n')
 #=======================================================================================================================
 #=============================================== FUNCTION FOR WITHDRAW =================================================
 #=======================================================================================================================
@@ -138,8 +137,8 @@ def Withdraw():
                                     file.write(f"{New_Date_Time},{Account_Number},Withdraw,{Amount},{New_Balance}\n")
 
                                 print(Fore.YELLOW+"\nWithdrawal Successful.\n")
-                                print(f"Withdrawal Amount : Rs {Amount}")
-                                print(f"New Balance : Rs {New_Balance}\n")
+                                print(f"{'Withdrawal Amount':<20} : Rs {Amount}")
+                                print(f"{'New Balance':<20} : Rs {New_Balance}\n")
                                 found = True
                                 break
                             else:
@@ -192,8 +191,8 @@ def Deposit(): #function for Deposit
                                 with open ("Transaction.txt",'a') as file:
                                     file.write(f"{New_Date_Time},{Account_Number},Deposit,{Amount},{New_Balance}\n")
                                     print(Fore.YELLOW+"\nWithdrawal Successful.\n")
-                                    print(f"Deposit Amount : Rs {Amount}")
-                                    print(f"New Balance : Rs {New_Balance}\n")
+                                    print(f"{'Deposit Amount':<16} : Rs {Amount}")
+                                    print(f"{'New Balance':<16} : Rs {New_Balance}\n")
                                     found =  True
                                     break
                             else:
@@ -420,7 +419,7 @@ while attempt < max_attempt:
                 Search_Account_Details()
 
             elif choice == '8':
-                print(Fore.YELLOW+"Thank you for using ATM. Exiting program!")
+                print(Fore.YELLOW+"Thank you for using Banking App. Exiting program!")
                 exit()
 
             else:
@@ -480,7 +479,7 @@ while attempt < max_attempt:
                                                     Transaction_History()
 
                                                 elif choice == '6':
-                                                    print(Fore.YELLOW+"\nThank you for using ATM. Exiting program!")
+                                                    print(Fore.YELLOW+"\nThank you for using Banking App. Exiting program!")
                                                     exit()
 
                                                 else:
@@ -488,7 +487,7 @@ while attempt < max_attempt:
 
                         break
         except FileNotFoundError:
-            print(Fore.RED+"User Database Not Found!")
+            pass
     
 
     attempt += 1
