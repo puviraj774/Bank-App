@@ -4,7 +4,6 @@ from colorama import Fore, Back, Style, init
 init(autoreset=True) 
 # "pip install colorama" run in command prompt
 
-
 #======================================================================================================
 #============================== FUNCTION FOR ADMIN LOGIN VIEW ========================================
 #======================================================================================================
@@ -271,10 +270,12 @@ def Transaction(): #function for Transaction Money
                         with open("Account_Details.txt",'w') as file:
                             for up in Acc01:
                                 update02 = up.strip().split(',')
+
                                 if update02[0] == Account_Number:
                                     update02[2] = float(New_Balance01)
                                 elif update02[0] == Account_Number2:
                                     update02[2] = float(New_Balance02)
+
                                 file.write(f"{update02[0]},{update02[1]},{update02[2]}\n")
                             
                         with open("Transaction.txt",'a') as file:
@@ -286,11 +287,13 @@ def Transaction(): #function for Transaction Money
                             
                     else :
                         print (Fore.RED+"\nInsufficient Funds! Enter The Correct Amount.")
+                        
                 except ValueError:
                     print(Fore.RED+"\nEnter Numbers Only!")
                     
         else:
             print(Fore.RED+"\nInvalid Account Number!")
+
     except FileNotFoundError:
         print(Fore.RED+"\nfile not found!")
 
@@ -306,6 +309,7 @@ def Transaction_History():  # function for transaction history
             lines = file.readlines()
             
             matched_lines = [line.strip().split(',') for line in lines if Account_Number == line.strip().split(',')[1]]
+
             if matched_lines:
                 print(Fore.CYAN + Style.BRIGHT + (f"\n{'Date & Time' :<25}{'Account Number' :<20}{'Deposit / Withdraw' :<23}{'Amount':<10}{'Balance':<10}"))
                 print('-' * 88)
@@ -340,6 +344,7 @@ def Search_Account_Details():
                     with open("Customer_Details.txt", 'r') as file2:
                         for cust_line in file2:
                             cust_data = cust_line.strip().split(',')
+
                             if cust_data[1] == account_data[1]:
                                 print(f"{'User Name':<25}: {cust_data[0]}")
                                 print(f"{'User Address':<25}: {cust_data[2]}")
@@ -351,9 +356,6 @@ def Search_Account_Details():
     except FileNotFoundError:
         print(Fore.RED+"\nAccount Not Found!")
 
-
-
-
 # ===============================================================================================
 # ===========================         Program Start         ===================================== 
 # ===============================================================================================
@@ -362,10 +364,9 @@ attempt =0
 max_attempt = 3
 
 while attempt < max_attempt:  
-    Admin_Details = 'Admin123,pass123\n'
 
     with open ("Admin_Details.txt",'w') as file:
-        file.write(Admin_Details)
+        file.write('Admin123,pass123\n')
 
     print("\n======Login======\n")
 
@@ -379,6 +380,7 @@ while attempt < max_attempt:
 
     if username == uname_for_admin and password == password_for_admin:
         print(Fore.CYAN+Style.BRIGHT+"\nLogin Successfully. WelCome Admin!")
+
         while True:
             Admin_Menu()
 
@@ -418,10 +420,11 @@ while attempt < max_attempt:
                 Search_Account_Details()
 
             elif choice == '8':
-                print("Thank you for using ATM. Exiting program!")
+                print(Fore.YELLOW+"Thank you for using ATM. Exiting program!")
                 exit()
+
             else:
-                print("\nInvalid input!")
+                print(Fore.RED+"\nInvalid input!")
 
     else:
         try:
@@ -439,6 +442,7 @@ while attempt < max_attempt:
                             CUS = file.readlines()
                             for CUS2 in CUS:
                                 CUS3 = CUS2.strip().split(',')
+
                                 if CUS3[0] == line2[0]:
                                     AHN = CUS3[1]
                                     with open ("Account_Details.txt",'r') as file:
@@ -476,10 +480,12 @@ while attempt < max_attempt:
                                                     Transaction_History()
 
                                                 elif choice == '6':
-                                                    print("Thank you for using ATM. Exiting program!")
+                                                    print(Fore.YELLOW+"\nThank you for using ATM. Exiting program!")
                                                     exit()
+
                                                 else:
-                                                    print("Invalid Input. Enter Between 1 to 6 ") 
+                                                    print(Fore.RED+"\nInvalid Input. Enter Between 1 to 6 ") 
+
                         break
         except FileNotFoundError:
             print(Fore.RED+"User Database Not Found!")
