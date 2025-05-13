@@ -1,2 +1,0 @@
-U001,Anusan,jaffna
-U002,jathusan,jaffna
