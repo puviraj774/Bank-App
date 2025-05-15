@@ -2,6 +2,8 @@
 from colorama import Fore, Back, Style, init
 init(autoreset=True) 
 # "pip install colorama" run in command prompt
+import os
+import random
 
 #======================================================================================================
 #============================== FUNCTION FOR ADMIN LOGIN VIEW ========================================
@@ -11,13 +13,13 @@ def Admin_Menu():
     print('\n---------------------------------')
     print(Fore.GREEN+"======> Mini Banking Menu <======")
     print('---------------------------------\n\n')
-    print("1.Create Account")
-    print("2.Withdraw")
-    print("3.Deposit")
-    print("4.Check Balances")
-    print("5.Transfer Money")
-    print("6.Transaction History")
-    print("7.Search Account Details")
+    print(Fore.YELLOW+"1.Create Account")
+    print(Fore.YELLOW+"2.Withdraw")
+    print(Fore.YELLOW+"3.Deposit")
+    print(Fore.YELLOW+"4.Check Balances")
+    print(Fore.YELLOW+"5.Transfer Money")
+    print(Fore.YELLOW+"6.Transaction History")
+    print(Fore.YELLOW+"7.Search Account Details")
     print(Fore.RED+"8.Exit")
 
 #======================================================================================================
@@ -28,11 +30,11 @@ def User_Menu():
     print('\n---------------------------------')
     print(Fore.GREEN+"======> Mini Banking Menu <======")
     print('---------------------------------\n\n')
-    print("1.Withdraw")
-    print("2.Deposit")
-    print("3.Check Balances")
-    print("4.Transfer Money")
-    print("5.Transaction History")
+    print(Fore.YELLOW+"1.Withdraw")
+    print(Fore.YELLOW+"2.Deposit")
+    print(Fore.YELLOW+"3.Check Balances")
+    print(Fore.YELLOW+"4.Transfer Money")
+    print(Fore.YELLOW+"5.Transaction History")
     print(Fore.RED+"6.Exit")
 
 #==========================================================================================================
@@ -40,37 +42,61 @@ def User_Menu():
 #========================= AUTO ACCOUNT NUMBER CREATION AND AUTO USER NAME CREATION =======================
 #==========================================================================================================
 
+def Get_Valid_Info(Getinfo ="" ):
+    while True:
+        Value = input(Getinfo)
+        if Value:
+            return Value  
+        else:
+            print(Fore.RED+"Invalid Input . Enter Something !")
+
+
 def Create_Account():
-      
-    try:
-        with open("Acc_No.txt",'r') as file: # Auto Create Account Numbers
-            Last_Acc = file.read().strip()
-            New_Acc = int(Last_Acc[1:]) + 1
-    except FileNotFoundError:       
-        New_Acc = 1
+    
+    Account_Numbers = list(range(1000,10000))
+    random.shuffle(Account_Numbers)
 
-    Account_Number = "A"+str(New_Acc).zfill(3)
-    with open ("Acc_No.txt",'w') as file:
-        file.write(Account_Number)
-
+    def Unique_Account_Num():
+        if Account_Numbers:
+            return Account_Numbers.pop()
+        else:
+            raise Exception("No more Unique Numbers!")
+        
     try:
         with open("User_ID.txt",'r') as file: 
             Last_Acc = file.read().strip()
             New_Acc = int(Last_Acc[1:]) + 1
     except FileNotFoundError:       
-        New_Acc = 1
+        New_Acc = 2
 
     User_Id = "U"+str(New_Acc).zfill(3)
     with open ("User_ID.txt",'w') as file:
         file.write(User_Id)
-
     print(Fore.BLUE+"\n========> Create_Account <========\n")
 
 
-    Acc_Holder_Name = input(f"{'Enter The Account Holder Name':<33} : ") 
-    User_Address = input(f"{'Enter The Address':<33} : ")
-    print(f"{'User Name':<33} : {User_Id}")
-    User_Password = input(f"{'Enter The Password':<33} : ")
+    Acc_Holder_Name = Get_Valid_Info(f"{'Enter The Account Holder Name':<33} : ") 
+    User_Address = Get_Valid_Info(f"{'Enter The Address':<33} : ")
+
+    print(f"{'User Id':<33} : {User_Id}")
+
+    while True:
+        found = False
+        User_Name = Get_Valid_Info(f"{'Enter The User Name':<33} : ")
+        if os.path.exists("Users_Details.txt"):
+            with open("Users_Details.txt",'r') as file: 
+                for lines in file:
+                    line = lines.strip().split(',')
+                    if User_Name == line[1]:
+                        found = True
+                        break
+                if  found:
+                    print(Fore.RED+"Username Already Exists! Choose Different Username.")
+                else:
+                    break
+
+    User_Password = Get_Valid_Info(f"{'Enter The Password':<33} : ")
+
     while True:
         try:
             balance = float(input(f"{'Enter The Initial Balance':<33} : RS "))
@@ -79,20 +105,22 @@ def Create_Account():
             print(Fore.RED+"invalid input . Enter numbers Only!")
     
 
-    print(Fore.YELLOW+"\nAccount Created Successfully!\n\n")  
+    print(Fore.YELLOW+"\nAccount Created Successfully!\n")  
+    Account_Number = Unique_Account_Num()
     print(f"{'Account Number':<21} : {Account_Number}")
-    print(f"{'User Name':<21} : {User_Id}")
+    print(f"{'User Id':<21} : {User_Id}")
+    print(f"{'User Name':<21} : {User_Name}")
     print(f"{'User Password':<21} : {User_Password}")
     print(f"{'Initial Balance':<21} : Rs {balance}")
 
     with open ("Users_Details.txt",'a') as file: 
-        file.write(f"{User_Id},{User_Password}\n")
+        file.write(f"{User_Id},{User_Name},{User_Password}\n")
     
     with open ("Customer_Details.txt",'a') as file: 
         file.write(f"{User_Id},{Acc_Holder_Name},{User_Address}\n")
 
     with open ("Account_Details.txt",'a') as file: 
-        file.write(f'{Account_Number},{Acc_Holder_Name},{balance}\n')
+        file.write(f'{Account_Number},{User_Id},{balance}\n')
 
     from datetime import datetime
     current_date_time = datetime.now()
@@ -333,22 +361,21 @@ def Search_Account_Details():
             for line in file:
                 account_data = line.strip().split(',')
 
+        with open("Customer_Details.txt", 'r') as file2:
+            for cust_line in file2:
+                cust_data = cust_line.strip().split(',')
+
                 if Account_Number == account_data[0]:
                     print (Fore.BLUE+"\nUser Details\n")
-                    print(f"{'Account Number':<25}: {account_data[0]}")
-                    print(f"{'Account Holder Name':<25}: {account_data[1]}")
-                    print(f"{'Account Balance':<25}: {account_data[2]}")
+                    print(f"{'User ID':<25}: {account_data[1]}")
+                    print(f"{'Account Balance':<25}: Rs {account_data[2]}")
                     found = True
 
-                    with open("Customer_Details.txt", 'r') as file2:
-                        for cust_line in file2:
-                            cust_data = cust_line.strip().split(',')
-
-                            if cust_data[1] == account_data[1]:
-                                print(f"{'User Name':<25}: {cust_data[0]}")
-                                print(f"{'User Address':<25}: {cust_data[2]}")
-                                break 
-                    break  
+                if cust_data[0] == account_data[1]:
+                    print(f"{'Account holder Name':<25}: {cust_data[1]}")
+                    print(f"{'User Address':<25}: {cust_data[2]}")
+                    break 
+                    
         if not found:
             print(Fore.RED+"\nAccount Not Found!")
 
@@ -364,20 +391,21 @@ max_attempt = 3
 
 while attempt < max_attempt:  
 
-    with open ("Admin_Details.txt",'w') as file:
-        file.write('Admin123,pass123\n')
+    if not os.path.exists("Users_Details.txt") or os.path.getsize("Users_Details.txt") == 0:
+        print("Admin_UserName = Admin123\nAdmin_Password = pass123\n")
+        with open ("Users_Details.txt",'w') as file:
+            file.write("U001,Admin123,pass123\n")
 
-    print("\n======Login======\n")
-
-    with open ("Admin_Details.txt",'r') as file:
-        Admin = file.readline().strip()
-
-    uname_for_admin , password_for_admin = Admin.split(',') 
+    print(Fore.CYAN+Style.BRIGHT+"\n======Login======\n")
 
     username = input("Enter UserName : ")
     password = input("Enter Password : ")
+   
+    with open("Users_Details.txt",'r') as file:
+        datas = file.readline()
+        data = datas.strip().split(',')
 
-    if username == uname_for_admin and password == password_for_admin:
+    if username == data[1] and password == data[2]:
         print(Fore.CYAN+Style.BRIGHT+"\nLogin Successfully. WelCome Admin!")
 
         while True:
@@ -434,56 +462,50 @@ while attempt < max_attempt:
                 for line in lines:
                     line2 = line.strip().split(',')
 
-                    if username  == line2[0] and  password == line2[1]:
+                    if username  == line2[1] and  password == line2[2]:
+                        userid = line2[0]
                         found = True
 
-                        with open("Customer_Details.txt",'r') as file:
-                            CUS = file.readlines()
-                            for CUS2 in CUS:
-                                CUS3 = CUS2.strip().split(',')
+                        with open ("Account_Details.txt",'r') as file:
+                            SAC = file.readlines()
 
-                                if CUS3[0] == line2[0]:
-                                    AHN = CUS3[1]
-                                    with open ("Account_Details.txt",'r') as file:
-                                        SAC = file.readlines()
+                        for SAC2 in SAC:
+                            SAC3 = SAC2.strip().split(',')
+                            if userid == SAC3[1]:
+                                Account_Number = SAC3[0]
 
-                                    for SAC2 in SAC:
-                                        SAC3 = SAC2.strip().split(',')
-                                        if AHN == SAC3[1]:
-                                            Account_Number = SAC3[0]
+                                print(Fore.CYAN+Style.BRIGHT+"\nLogin Successfully. WelCome !")
+                                while True:
+                                    User_Menu()
 
-                                            print(Fore.CYAN+Style.BRIGHT+"\nLogin Successfully. WelCome !")
-                                            while True:
-                                                User_Menu()
+                                    choice = input("\nenter your opinion (1 - 6) : ")
 
-                                                choice = input("\nenter your opinion (1 - 6) : ")
+                                    if choice == '1':
+                                        print(Fore.BLUE+"\n==========> Withdraw  <==========\n")
+                                        Withdraw()
 
-                                                if choice == '1':
-                                                    print(Fore.BLUE+"\n==========> Withdraw  <==========\n")
-                                                    Withdraw()
+                                    elif choice == '2':
+                                        print(Fore.BLUE+"\n==========> Deposit  <==========\n")
+                                        Deposit()
 
-                                                elif choice == '2':
-                                                    print(Fore.BLUE+"\n==========> Deposit  <==========\n")
-                                                    Deposit()
+                                    elif choice == '3':
+                                        print(Fore.BLUE+"\n==========> Check Balance  <==========\n")
+                                        Check_Balance()
 
-                                                elif choice == '3':
-                                                    print(Fore.BLUE+"\n==========> Check Balance  <==========\n")
-                                                    Check_Balance()
+                                    elif choice == '4':
+                                        print(Fore.BLUE+"\n==========> Money Transfer  <==========\n")
+                                        Transaction()
 
-                                                elif choice == '4':
-                                                    print(Fore.BLUE+"\n==========> Money Transfer  <==========\n")
-                                                    Transaction()
+                                    elif choice == '5':
+                                        print(Fore.BLUE+"\n==========>  View Transaction_History  <==========\n")
+                                        Transaction_History()
 
-                                                elif choice == '5':
-                                                    print(Fore.BLUE+"\n==========>  View Transaction_History  <==========\n")
-                                                    Transaction_History()
+                                    elif choice == '6':
+                                        print(Fore.YELLOW+"\nThank you for using Banking App. Exiting program!")
+                                        exit()
 
-                                                elif choice == '6':
-                                                    print(Fore.YELLOW+"\nThank you for using Banking App. Exiting program!")
-                                                    exit()
-
-                                                else:
-                                                    print(Fore.RED+"\nInvalid Input. Enter Between 1 to 6 ") 
+                                    else:
+                                        print(Fore.RED+"\nInvalid Input. Enter Between 1 to 6 ") 
 
                         break
         except FileNotFoundError:
