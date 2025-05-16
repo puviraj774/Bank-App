@@ -392,7 +392,7 @@ max_attempt = 3
 while attempt < max_attempt:  
 
     if not os.path.exists("Users_Details.txt") or os.path.getsize("Users_Details.txt") == 0:
-        print("Admin_UserName = Admin123\nAdmin_Password = pass123\n")
+        print(Fore.YELLOW+"\nAdmin_UserName = Admin123\nAdmin_Password = pass123\n")
         with open ("Users_Details.txt",'w') as file:
             file.write("U001,Admin123,pass123\n")
 
